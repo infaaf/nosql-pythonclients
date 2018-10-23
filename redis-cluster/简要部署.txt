@@ -1,0 +1,30 @@
+配置文件
+
+[root@s21 redis]# cat /etc/redis/redis-7000.conf
+port 7000
+daemonize yes
+dir "/data/redis/7000/"
+dbfilename "dump-7000.rdb"
+logfile "7000.log"
+### 主要不同处
+cluster-enabled yes
+# 自动生成
+cluster-config-file nodes-7000.conf
+#cluster-node-timeout 15000
+# 任一节点故障集群对外不提供服务。 默认为yes 一般可以配置为no
+cluster-require-full-coverage no    
+
+
+启动多节点
+[root@s21 ~]# cat redis-multi-start.sh
+redis-server  /etc/redis/redis-7000.conf
+redis-server  /etc/redis/redis-7001.conf
+redis-server  /etc/redis/redis-7002.conf
+redis-server  /etc/redis/redis-7003.conf
+redis-server  /etc/redis/redis-7004.conf
+redis-server  /etc/redis/redis-7005.conf
+[root@s21 ~]#
+
+
+集群创建
+redis-trib.rb create --replicas 1  127.0.0.1:7000  127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005
